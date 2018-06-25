@@ -1,0 +1,149 @@
+<div class="card col-7 m-auto">
+  <div class="card-header bg-info">
+    <h3>Envia tu mensaje</h3>
+  </div>
+  <div class="card-body bg-light">
+    <div class="container">
+      <form #formMensaje="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-group">
+          <label for="ejemplo1">Para:</label>
+          <input type="number" class="form-control" id="ejemplo1" name="ejemplo1" placeholder="Ingrese Destinatario" [(ngModel)]="mensaje.hasta"
+            #numDest="ngModel" required>
+          <span style="color:red" *ngIf="!numDest.valid && (numDest.touched || numDest.dirty)">
+            <div [hidden]="!numDest.errors.required">
+              Destinatario Obligatorio
+            </div>
+          </span>
+        </div>
+        <div class="form-group">
+          <label for="ejemplo2">Desde:</label>
+          <input type="number" class="form-control" id="ejemplo2" name="ejemplo2" placeholder="Ingrese Remitente" [(ngModel)]="mensaje.desde"
+            #numRemi="ngModel" required>
+          <span style="color:red" *ngIf="!numRemi.valid && (numRemi.touched || numRemi.dirty)">
+            <div [hidden]="!numRemi.errors.required">
+              Remitente Obligatorio
+            </div>
+          </span>
+        </div>
+
+        <div class="row form-group">
+          <label for="txtEmpresa">Empresa Destino:</label>
+          <select [(ngModel)]="mensaje.empresa" name="empresa" id="txtEmpresa">
+            <option *ngFor="let empresa of empresas" [value]="empresa.nombre">{{empresa.nombre}}</option>
+          </select>
+        </div>
+
+
+
+
+
+
+
+
+        <div class="form-group">
+          <div>
+            {{longMensaje}} Caracteres escritos. {{tamMaximo - longMensaje}} Caracteres restantes.
+          </div>
+          <textarea class="form-control" [(ngModel)]="mensaje.texto" [ngModelOptions]="{standalone: true}" (ngModelChange)="cambiarLongitud()"
+            rows="6" [maxlength]="tamMaximo" #mensaje="ngModel" required>
+            <span style="color:red" *ngIf="!mensaje.valid && mensaje.touched">
+                <div [hidden]="!mensaje.errors.required">
+                      Debe ingresar un mensaje
+                </div>
+            </span>
+              
+          </textarea>
+
+        </div>
+        <div class="form-group" *ngIf="!formMensaje.valid">
+          <span style="color:red">Compruebe que los datos con * esten completos antes de enviar el mensaje</span>
+        </div>
+        <button class="btn btn-primary" type="button" (click)="limpiarCampos()">Limpiar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!formMensaje.valid" data-toggle="modal" data-target="#exampleModal">
+          Enviar
+        </button>
+
+      </form>
+      <div class="w-100">
+      </div>
+      <form>
+        <div class="form-group">
+          <label for="txtNombre">Nombre Empresa:</label>
+          <input type="text" class="form-control" id="txtNombre" name="txtNombre" placeholder="Ingrese Empresa"[(ngModel)]="empresa.nombre">
+        </div>
+        <div class="form-group">
+          <label for="txtRS">Razon Social:</label>
+          <input type="text" class="form-control" id="txtRS" name="txtRS" [(ngModel)]="empresa.razonSocial">
+        </div>
+        <div class="form-group">
+          <label for="txtUrl">Url:</label>
+          <input type="text" class="form-control" id="txtUrl" name="txtUrl" [(ngModel)]="empresa.urlWebSite">
+        </div>
+        <button type="button" class="btn btn-primary" (click)="guardarEmpresa()" >Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card-footer">
+
+  </div>
+
+
+  <!-- Datatable -->
+  <table class="table table-striped" [mfData]="mensajes" #mf="mfDataTable" [mfRowsOnPage]="4">
+    <thead>
+    <tr>
+      <th style="width: 10%"> <mfDefaultSorter by="desde">Desde</mfDefaultSorter> </th>
+      <th style="width: 10%"> <mfDefaultSorter by="hasta">Hasta</mfDefaultSorter> </th>
+      <th style="width: 60%"> <mfDefaultSorter by="texto">Texto</mfDefaultSorter> </th>
+      <th style="width: 10%"> <mfDefaultSorter by="fecha">Fecha</mfDefaultSorter> </th>
+      <th style="width: 10%"> Comandos </th>      
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of mf.data">
+      <td>{{item.desde}}</td>
+      <td>{{item.hasta}}</td>
+      <td>{{item.texto}}</td>
+      <td>{{item.fecha.timestamp * 1000 | date: 'dd/MM/yyyy'}}</td>
+      <td>
+        <button class="btn" (click)="borrarMensaje(item)">Del</button>
+        <button class="btn" (click)="elegirMensaje(item)">Upd</button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="4">
+        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Mensaje Enviado</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{mensaje.texto}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+
+      </div>
+    </div>
+  </div>
+</div>

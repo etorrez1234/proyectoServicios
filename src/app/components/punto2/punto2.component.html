@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="card m-lg-auto col-7 ">
+    <div class="card-header bg-info">
+      <h3>Casa de Cambios</h3>
+    </div>
+    <div class="card-body bg-light">
+      <div class="container ">
+        <form role="form" #fmrMoneda="ngForm" (ngSubmit)="onSubmit()" novalidate>
+          <div class="form-group">
+            <label for="ejemplo_billete">Ingrese cantidad del Billete *</label>
+
+            <input type="number" class="form-control" step="0,01" id="billete" [(ngModel)]="plata" #din="ngModel" [ngModelOptions]="{standalone: true}"
+              required/>
+            <span style="color:red" *ngIf="!din.valid && din.touched">
+              <div [hidden]="!din.errors.required">
+               El Campo Cantidad es Obligatorio
+              </div>
+            </span>
+          </div>
+          <label>Eliga a que moneda quiere convertir *</label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" [(ngModel)]="condicion" [ngModelOptions]="{standalone: true}" value="option1"
+              checked required #opDolar="ngModel">
+            <label class="form-check-label" for="exampleRadios1">
+              Dolar
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios2" [(ngModel)]="condicion" [ngModelOptions]="{standalone: true}" value="option2"
+              checked required #opPesos="ngModel">
+            <label class="form-check-label" for="exampleRadios2">
+              Pesos
+            </label>
+          </div>
+          <div style="color:red" class="form-group" *ngIf="!fmrMoneda.valid">
+            <span>Compruebe que los datos con * esten completos antes de saber la conversion</span>
+          </div>
+          <button type="submit" class="btn btn-info" (click)="convertirPlata()" [disabled]="!fmrMoneda.valid">Convertir</button>
+
+          <div>
+            <div class="form-group">
+              <label for="resultado">Pesos: ${{resultado}}</label>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <div class="card-footer">
+
+    </div>
+
+  </div>
+</div>

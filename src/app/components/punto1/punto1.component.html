@@ -1,0 +1,133 @@
+<div class="row">
+  <div class="card m-auto">
+    <div class="card-header bg-info">
+      <h3>EVALUACIONES - CICLO 2018</h3>
+    </div>
+    <div class="card-body bg-light">
+      <form #notasFormulario="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-group">
+          <label for="txtlegajo">LU:</label>
+          <input type="number" class="form-control" id="txtlegajo" name="txtlegajo" [(ngModel)]="evaluacion.lu" required #lega="ngModel">
+
+        </div>
+        <div class="form-group">
+          <label for="txtnotaconcepto">Nota Concepto*</label>
+          <input type="number" class="form-control" id="txtnotaconcepto" name="txtnotaconcepto" [(ngModel)]="evaluacion.notaConcepto"
+            required #notaC="ngModel" min=0 max=10>
+          <span style="color:red" *ngIf="!notaC.valid && notaC.touched">
+            <div [hidden]="!notaC.errors.required">
+              Nota Concepto Obligatoria
+            </div>
+          </span>
+
+        </div>
+        <div class="form-group">
+          <label for="txtnotaescrita">Nota Escrita*</label>
+          <input type="number" class="form-control" id="txtnotaescrita" name="txtnotaescrita" [(ngModel)]="evaluacion.notaEscrita"
+            required #notaE="ngModel" min=0 max=10>
+          <span style="color:red" *ngIf="!notaE.valid && notaE.touched">
+            <div [hidden]="!notaE.errors.required">
+              Nota Escrita Obligatoria
+            </div>
+          </span>
+        </div>
+        <div class="form-group">
+          <label for="txtnotaoral">Nota Oral*</label>
+          <input type="number" class="form-control" id="txtnotaoral" name="txtnotaoral" [(ngModel)]="evaluacion.notaOral" required
+            #notaO="ngModel" min=0 max=10>
+          <span style="color:red" *ngIf="!notaO.valid && notaO.touched">
+            <div [hidden]="!notaO.errors.required">
+              Nota Oral Obligatoria
+            </div>
+          </span>
+        </div>
+        <div class="form-group" *ngIf="!notasFormulario.valid">
+          <span style="color:red">Compruebe que los datos con * esten completos antes de calcular el promedio</span>
+        </div>
+
+        <div class="card-footer bg-info">
+          <button type="button" class="btn btn-success btn-block border-dark" (click)="enviarEvaluacion()" [disabled]="!notasFormulario.valid"
+            data-toggle="modal" data-target="#myModal">Guardar Nota</button>
+          <button type="button" class="btn btn-warning btn-block border-dark" (click)="mostrarHistorico()">Historico</button>
+        </div>
+      </form>
+
+
+
+      <!-- data table-->
+      <table class="table table-striped" [mfData]="evaluaciones" #mf="mfDataTable" [mfRowsOnPage]="4">
+        <thead>
+          <tr>
+            <th style="width: 10%">
+              <mfDefaultSorter by="lu">Lu</mfDefaultSorter>
+            </th>
+            <th style="width: 10%">
+              <mfDefaultSorter by="notaConcepto">nota Concepto</mfDefaultSorter>
+            </th>
+            <th style="width: 60%">
+              <mfDefaultSorter by="notaEscrita">nota Escrita</mfDefaultSorter>
+            </th>
+            <th style="width: 10%">
+              <mfDefaultSorter by="notaOral">nota Oral</mfDefaultSorter>
+            </th>
+            <th style="width: 10%"> Comandos </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of mf.data; let posicion = index">
+            <td>{{item.lu}}</td>
+            <td>{{item.notaConcepto}}</td>
+            <td>{{item.notaEscrita}}</td>
+            <td>{{item.notaOral'}}</td>
+            <td><button type="button" id="btnCalcular" class="btn btn-info"
+              (click)="calcularPromedio(item.lu)" data-toggle="modal" data-target="#exampleModal">Calcular Promedio</button></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">
+              <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+    </div>
+    <div class="card-footer">
+
+    </div>
+
+  </div>
+
+  <!-- MODAL-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Nota Final</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="txtlegajo"> Alumno con legajo : {{legajo}} </label>
+          </div>
+          <div class="form-group">
+            <label for="txtpromedio"> Su Promedio es : {{promedio}} </label>
+          </div>
+          <div class="form-group">
+            <label for="txtestado"> Su Estado es : {{estado}} </label>
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
