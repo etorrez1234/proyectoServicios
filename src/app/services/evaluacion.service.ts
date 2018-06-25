@@ -15,7 +15,7 @@ export class EvaluacionService {
 
     // petición por get a esa url de un api rest de empresas
     return this._http.get("http://localhost/AreadeTrabajo/MensajeProyecto/web/app_dev.php/evaluacion/")
-    .map(res => res.json());
+      .map(res => res.json());
   }
 
   enviarEvaluacion(evaluacion) { 

@@ -5,9 +5,22 @@
     </div>
     <div class="card-body bg-light">
       <form role="form" #formPasaje="ngForm" novalidate>
+
+
+          <div class="form-group">
+              <label>*DNI:</label>
+              <input type="number" class="form-control" name="input" type="number" [(ngModel)]="pasajeVuelo.dni" #dniLocal="ngModel" required/>
+              <span style="color:red" *ngIf="!dniLocal.valid && dniLocal.touched">
+                <div [hidden]="!dnioLocal.errors.required" class="alert-danger">
+                  Campo Obligatorio
+                </div>
+              </span>
+            </div>
+
+
         <div class="form-group">
           <label for="txtpasaje">Precio del pasaje</label>
-          <input type="number" class="form-control " id="txtpasaje" name="txtpasaje" [(ngModel)]="precio" (change)="validarCampos()"
+          <input type="number" class="form-control " id="txtpasaje" name="txtpasaje" [(ngModel)]="pasajeVuelo.precio" (change)="validarCampos()"
             #pre="ngModel" required>
           <span style="color:red" *ngIf="!pre.valid && pre.touched">
             <div [hidden]="!pre.errors.required">
@@ -26,13 +39,127 @@
 
         <div class="form-group" *ngIf="validar">
 
-          <label for="resultado"> PRECIO FINAL: {{importeFinal}}</label>
+          <label for="resultado"> PRECIO FINAL: {{pasajeVuelo.precioFinal}}</label>
 
         </div>
+        <div class="card-footer bg-info">
+            <div class="form-group row">
+              <button type="button" class="btn btn-info" (click)="enviarVenta()" 
+               [disabled]="!formularioPasaje.valid" data-toggle="modal" data-target="#myModal">Enviar</button>
+              <button type="button" class="btn btn-info" (click)="mostrarHistorico()">Historico</button>
+            </div>
+      </div>
       </form>
+
+
+     <!-- Data table -->
+      <table class="table table-striped text-center" [mfData]="pasajes" #mf="mfDataTable" [mfRowsOnPage]="4">
+          <thead>
+            <tr>
+              <th style="width: 10%">
+                <mfDefaultSorter by="dni">DNI</mfDefaultSorter>
+              </th>
+              <th style="width: 10%">
+                <mfDefaultSorter by="precio">Precio</mfDefaultSorter>
+              </th>
+              <th style="width: 10%">
+                <mfDefaultSorter by="Descuento">Descuento</mfDefaultSorter>
+              </th>
+              <th style="width: 10%">
+                <mfDefaultSorter by="precioFinal">Precio Final</mfDefaultSorter>
+              </th>
+              <th style="width: 10%">
+                <mfDefaultSorter by="fecha">Gestion</mfDefaultSorter>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of mf.data">
+              <td>{{item.dni}}</td>
+              <td>{{item.precio}}</td>
+              <td>{{item.descuento}}</td>
+              <td>{{item.precioFinal}}</td>
+              <td>
+                <button type="button" class="btn btn-info"  data-toggle="modal"
+                (click)="mostrarSeleccionado(item.id)" data-target="#dialogo1">Editar</button>
+                <button type="button" class="btn btn-info" 
+                (click)="borrarSeleccionado(item)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">
+                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
     </div>
     <div class="card-footer">
 
     </div>
   </div>
+</div>
+
+<div class="modal fade" id="dialogo1">
+  
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+    
+        <!-- cabecera del diálogo -->
+        <div class="modal-header bg-secondary">
+          <h4 class="modal-title">Resultado</h4>
+          <button type="button" class="close bg-danger" data-dismiss="modal">x</button>
+        </div>
+    
+        <!-- cuerpo del diálogo -->
+        <div class="modal-body">
+        <div class="card-body">
+          <div class="form-group">
+            <label>DNI:</label>
+            <input class="form-control" type="number" [(ngModel)]="ventaPasajeSeleccionada.dni" />
+          </div>
+          <div class="form-group">
+            <label>Precio de pasaje $:</label>
+            <input class="form-control" type="number" [(ngModel)]="ventaPasajeSeleccionada.precio"/>
+          </div>
+
+          <div class="form-group">
+            <label for="">Seleccionar categoria para calcular:</label>
+            <br>
+            <select class="form-control" name="tipoPasajero" (change)="calcularPasajeActualizado($event)">
+                <option value="Op">Eliga una opcion</option>
+                <option value="M">Menor</option>
+                <option value="A">Adulto</option>
+                <option value="J">Jubilado</option>
+              </select>
+            <span *ngIf="categoria === 'M'">
+              <div class="alert-link">Descuento Para Menor</div>
+            </span>
+            <span *ngIf="categoria === 'A'">
+              <div class="alert-link">Adultos no tienen Descuento</div>
+            </span>
+            <span *ngIf="categoria === 'J'">
+              <div class="alert-link">Descuento Para Jubilado</div>
+            </span>
+          </div>
+
+        <div class="form-group">
+          <div *ngIf="cartel === true">
+            <label for="" class="alert-success">Total a Pagar:{{ventaPasajeSeleccionada.precioFinal}}</label>
+          </div>
+        </div>
+
+        <!-- pie del diálogo -->
+        <div class="modal-footer bg-secondary">
+          <button type="button" class="btn btn-info"
+          (click)="actualizarVenta()" data-dismiss="modal">Actualizar</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        </div>
+    
+      </div>
+    </div>
+
+</div>
 </div>

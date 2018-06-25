@@ -49,7 +49,7 @@ export class Punto1Component implements OnInit {
   this.evaluaciones.forEach(evaluacion => {
     if(evaluacion.lu === legajo){
       console.log(evaluacion);
-     // this.lu = element.lu;
+      this.legajo = evaluacion.lu;
       this.promedio = (evaluacion.notaConcepto + evaluacion.notaEscrito + evaluacion.notaOral) / 3;
       console.log(this.promedio);
       if (this.promedio > 6) {
